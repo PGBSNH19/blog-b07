@@ -1,0 +1,135 @@
+### 2020-09-09
+
+## vad en är pipeline?
+
+En pipeline är en uppsättning av automatiserade processer som låter utvecklaren att kompilera, builda och distribuera deras kod till produktion. 
+
+en (pipeline.yml) är en fil med instruktioner om hur datorn ska utföra automatiserade operationer.
+
+vår yml fil innehåller denna instrktionen for att köra automatiserade tester. Vi har skapat trigger för master branchen, det betyder att så fort ny commit kommer till vår github repository på master branchen utförs test operationen eftersom vi har bestämt det med (command:test)
+
+```
+trigger:
+- master
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+
+variables:
+  buildConfiguration: 'Release'
+
+steps:
+- task: DotNetCoreCLI@2
+  inputs: 
+    command: test
+    project: '/Pipeline.test/*.csproj'
+    arguments: '--configuration $(buildConfiguration)'
+- script: dotnet build --configuration $(buildConfiguration)
+  displayName: 'dotnet build $(buildConfiguration)'
+```
+
+### 1. Instruktioner för att skapa automatiserade tester
+
+Öppna en windows terminal. 
+
+### 2. Skapa en mapp och navigera i det
+```
+mkdir myMapp
+
+cd myMapp/
+```
+
+### 3. Skapa nytt MVC projekt
+Skriv i terminalen: `dotnet new MVC` Öppna sedan projektet med Visual Studio.
+Höger klick på projektet och välj add > Docker-support
+Detta kommer skapa en Dockerfil i ditt projekt
+
+
+### 4. Skapa Azure Container Registry (ACR)
+Gå tillbaka till terminalen för att skapa azure contianer registry. Du behöver ha Azure CLI installerat för detta. Om du inte har det, ladda först ner och installera det. Skriv sedan i terminalen `az login`. Du kommer bli navigerat till azure websida för att logga in.
+
+Nu kan du skapa en Resource group på azure med command line från terminalen:
+`az group create --name samirResource --location northeurope`
+
+Nästa steg är att faktiskt ska vår ACR och det med kommandot: 
+```
+az acr create --resource-group samirResource --name samirreg --sku basic
+```
+
+
+### 5. Azure DevOps
+Googla Azure DevOps, skapa konto/logga in och sedan skapa en organisation. Skapa sedan ett nytt projekt. 
+Gå till project settings > Service connections. Skapa här en ny service connection genom att välja Docker registry >Aazure Container Registry. Fyll i raderna med följande: 
+
+**Subscription:** <Ditt subscription id från azure portal>
+**Azure Container Registry:** <Namn på ditt Container Registry>
+**Service Connection Name:** <välj ett service connection namn>
+
+
+### 6. Skapa en pipeline
+Klick på Pipepeline > New pipeline > GitHub > Välj ditt projekt repository på gitHub > Start Pipeline. Välj sedan din pipeline och klicka på edit. För att få din pipeline att automatiskt  testa, för varje push till master branchen på github, skriv följande kod. Kom ihåg att det är med viktigt indentering i yml filer:
+
+```
+trigger:
+- master
+
+pool:
+ vmImage: 'ubuntu-latest'
+
+variables:
+ buildConfiguration: 'Release'
+
+steps:
+- task: DotNetCoreCLI@2
+ inputs: 
+  command: test
+  project: '/Pipeline.test/*.csproj'      
+  arguments: '--configuration $(buildConfiguration)'
+- script: dotnet build --configuration $(buildConfiguration)
+
+ displayName: 'dotnet build $(buildConfiguration)'
+```
+Se till att sätta relativ sökväg korrekt för projektstrukturen.
+
+
+### 7. För att pusha koden till azure container registry
+Skapa ny pipeline och skriv  in följande kommand:
+
+```
+trigger:
+- master
+
+resources:
+- repo: self
+
+variables:
+  # Container registry service connection established during pipeline creation
+  imageRepository: 'mydiceapp.azurecr.io'
+  containerRegistry: 'mydiceapp'
+  tag: '$(Build.BuildId)'
+
+  # Agent VM image name
+  vmImageName: 'ubuntu-latest'
+
+stages:
+- stage: Build
+  displayName: Build and push stage
+  jobs:
+  - job: Build
+    displayName: Build
+    pool:
+      vmImage: $(vmImageName)
+    steps:
+    - task: Docker@2
+      displayName: Build and push an image to container registry
+      inputs:
+        command: buildAndPush
+        repository: $(imageRepository)
+        dockerfile: DiceAppMVC/Dockerfile
+        containerRegistry: diceappacr
+        tags: |
+          $(tag)
+```
+
+Fyll i för dina egna namngivelser.
