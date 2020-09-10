@@ -4,11 +4,11 @@ Lektion:
 
 [01: Internet och moln](Lektion_1.md)
 
-02: Virtuella maskiner och infrastruktur som kod(Lektion_2.md)
+[02: Virtuella maskiner och infrastruktur som kod](Lektion_2.md)
 
-03: Containrar(Lektion_3.md)
+[03: Containrar](Lektion_3.md)
 
-04: Automatisering av bygg och release(Lektion_4.md)
+[04: Automatisering av bygg och release](Lektion_4.md)
 
 05: beskrivning
 
