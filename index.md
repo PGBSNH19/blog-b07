@@ -1,8 +1,8 @@
-<h2 align="center">Blogg för Buddy Grupp 7</h2>
+<h1 align="center">Blogg för Buddy Grupp 7</h1>
 
-<p align="center">Pierre och Samir</p>
+<h3 align="center">Pierre och Samir</h3>
 
-#### Innehåll:
+## Innehåll:
 
 * [01: Internet och moln](01.md)
 
