@@ -1,27 +1,29 @@
-# Blogg för XX
+<h2 align="center">Blogg för Buddy Grupp 7</h2>
 
-Lektion:
+<p align="center">Pierre och Samir</p>
 
-[01: Internet och moln](Lektion_1.md)
+#### Innehåll:
 
-[02: Virtuella maskiner och infrastruktur som kod](Lektion_2.md)
+* [01: Internet och moln](01.md)
 
-[03: Containrar](Lektion_3.md)
+* [02: Virtuella maskiner och infrastruktur som kod](02.md)
 
-[04: Automatisering av bygg och release](Lektion_4.md)
+* [03: Containrar](03.md)
 
-05: beskrivning
+* [04: Automatisering av bygg och release](04.md)
 
-06: beskrivning
+* [05: beskrivning](05.md)
 
-07: beskrivning
+* [06: beskrivning](06.md)
 
-08: beskrivning
+* [07: beskrivning](07.md)
 
-09: beskrivning
+* 08: beskrivning
 
-10: beskrivning
+* [09: Loggning i molnet](09.md)
 
-11: beskrivning
+* 10: beskrivning
 
-12: beskrivning
+* 11: beskrivning
+
+* 12: beskrivning
